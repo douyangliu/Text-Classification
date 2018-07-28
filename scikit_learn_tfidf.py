@@ -7,6 +7,8 @@ import sys
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 wordslist = []
 titlelist = []
@@ -15,12 +17,12 @@ titlelist = []
 def traversing_folder(dir):
     """遍历文件夹"""
     for file in os.listdir(dir):
-        if os.path.isdir(file):
-            traversing_folder(dir+"\\"+file)
+        full_file_path = dir + "/" + file
+        if os.path.isdir(full_file_path):
+            traversing_folder(full_file_path)
         else:
             # windows下编码问题添加：.decode('gbk', 'ignore').encode('utf-8'))
-            titlelist.append(file.decode('gbk'))
-            full_file_path = dir + "\\" + file
+            titlelist.append(file)
             with open(full_file_path, 'r') as f:
                 content = f.read().strip().replace('\n', '').replace(
                     ' ', '').replace('\t', '').replace('\r', '')
@@ -32,7 +34,6 @@ def traversing_folder(dir):
 if __name__ == "__main__":
     yuliaoku_dir = os.path.join(os.getcwd(), 'yuliaoku')
     traversing_folder(yuliaoku_dir)
-    print(titlelist)
 
     vectorizer = CountVectorizer()
     transformer = TfidfTransformer()
@@ -41,11 +42,11 @@ if __name__ == "__main__":
     words = vectorizer.get_feature_names()  # 所有文本的关键字
     weight = tfidf.toarray()
 
-    n = 100  # 前五位
+    n = 3  # 前五位
     for (title, w) in zip(titlelist, weight):
-        print u'{}:'.format(title)
+        print(u'{}:'.format(title))
         # 排序
         loc = np.argsort(-w)
         for i in range(n):
-            print u'-{}: {} {}'.format(str(i + 1), words[loc[i]], w[loc[i]])
-        print '\n'
+            print(u'-{}: {} {}'.format(str(i + 1), words[loc[i]], w[loc[i]]))
+        print('\n')
