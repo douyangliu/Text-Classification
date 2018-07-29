@@ -17,8 +17,6 @@ titlelist = []
 def traversing_folder(dir):
     """遍历文件夹"""
     for file in os.listdir(dir):
-        if '.' in file:
-            continue
         full_file_path = dir + "/" + file
         if os.path.isdir(full_file_path):
             traversing_folder(full_file_path)
